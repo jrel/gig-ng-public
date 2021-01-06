@@ -7,7 +7,7 @@ const A_CODE = 'a'.codePointAt(0) as number;
 const Z_CODE = 'z'.codePointAt(0) as number;
 
 @Injectable({ providedIn: 'root' })
-export class GeneratorService {
+export class CodeGeneratorService {
   private char$ = new Subject<string>();
   private clock$ = interval(1000).pipe(map(() => new Date()));
   private grid$ = combineLatest([this.char$, interval(2000)]).pipe(

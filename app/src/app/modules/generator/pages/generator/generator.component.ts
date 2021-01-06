@@ -12,7 +12,7 @@ import {
   timeoutWith,
 } from 'rxjs/operators';
 import { interval, Observable, of } from 'rxjs';
-import { GeneratorService } from '../../services/generator.service';
+import { CodeGeneratorService } from '../../../../services/code-generator.service';
 
 @Component({
   selector: 'app-module-generator-page-generator',
@@ -28,7 +28,7 @@ export class GeneratorPageComponent {
   code$ = this.service.getCode();
 
 
-  constructor(private service: GeneratorService) { }
+  constructor(private service: CodeGeneratorService) { }
 
   onGenerateGridButtonClick(): void {
     this.service.generateNewGrid(this.char);
