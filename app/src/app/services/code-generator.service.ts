@@ -9,7 +9,10 @@ import {
 import { AsyncScheduler } from 'rxjs/internal/scheduler/AsyncScheduler';
 import {
   combineAll,
+  defaultIfEmpty,
   map,
+  pluck,
+  share,
   shareReplay,
   startWith,
   withLatestFrom,
@@ -30,15 +33,20 @@ export class CodeGeneratorService {
       refCount: false,
     })
   );
-  private grid$ = combineLatest([this.char$, interval(2000)]).pipe(
+
+  private calc$: Observable<
+    | {
+        grid: string[][];
+        date: Date;
+        code: number;
+      }
+    | undefined
+  > = combineLatest([this.char$, interval(2000)]).pipe(
     map(([char]) =>
       Array.from({ length: 10 }, () =>
         Array.from({ length: 10 }, () => this.getRandomChar(char ?? ''))
       )
-    )
-  );
-
-  private code$ = this.grid$.pipe(
+    ),
     withLatestFrom(this.clock$),
     map(
       ([grid, date]) =>
@@ -57,21 +65,29 @@ export class CodeGeneratorService {
         this.getLowerInteger(step3[0]),
         this.getLowerInteger(step3[1]),
       ];
-      return +step4.join('');
+      return {
+        grid,
+        date,
+        code: +step4.join(''),
+      };
     }),
-    shareReplay(),
+    startWith(undefined),
+    shareReplay(1)
   );
 
   getClock(): Observable<Date> {
     return this.clock$;
   }
 
-  getGrid(): Observable<string[][]> {
-    return this.grid$;
-  }
-
-  getCode(): Observable<number> {
-    return this.code$;
+  getData(): Observable<
+    | {
+        grid: string[][];
+        date: Date;
+        code: number;
+      }
+    | undefined
+  > {
+    return this.calc$;
   }
 
   generateNewGrid(char: string): void {

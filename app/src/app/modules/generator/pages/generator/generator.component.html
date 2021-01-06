@@ -8,13 +8,13 @@
 
   <button (click)="onGenerateGridButtonClick()">Generate 2D Grid</button>
 </header>
-<main>
+<main *ngIf="data$|async as data">
   <table>
     <tbody>
-      <tr *ngFor="let row of grid$|async">
+      <tr *ngFor="let row of data.grid">
         <td *ngFor="let cell of row">{{cell}}</td>
       </tr>
     </tbody>
   </table>
+  {{ data.code }}
 </main>
-{{ code$|async}}

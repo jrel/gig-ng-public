@@ -24,8 +24,7 @@ export class GeneratorPageComponent {
   char = '';
 
   clock$ = this.service.getClock();
-  grid$ = this.service.getGrid();
-  code$ = this.service.getCode();
+  data$ = this.service.getData();
 
 
   constructor(private service: CodeGeneratorService) { }
