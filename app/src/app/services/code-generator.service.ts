@@ -1,6 +1,19 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, interval, Observable, Subject } from 'rxjs';
-import { combineAll, map, withLatestFrom } from 'rxjs/operators';
+import {
+  combineLatest,
+  interval,
+  Observable,
+  ReplaySubject,
+  Subject,
+} from 'rxjs';
+import { AsyncScheduler } from 'rxjs/internal/scheduler/AsyncScheduler';
+import {
+  combineAll,
+  map,
+  shareReplay,
+  startWith,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { linear, special } from 'src/app/utils/random';
 
 const A_CODE = 'a'.codePointAt(0) as number;
@@ -8,8 +21,15 @@ const Z_CODE = 'z'.codePointAt(0) as number;
 
 @Injectable({ providedIn: 'root' })
 export class CodeGeneratorService {
-  private char$ = new Subject<string>();
-  private clock$ = interval(1000).pipe(map(() => new Date()));
+  private char$ = new ReplaySubject<string>();
+  private clock$ = interval(1000).pipe(
+    startWith(0),
+    map(() => new Date()),
+    shareReplay({
+      bufferSize: 1,
+      refCount: false,
+    })
+  );
   private grid$ = combineLatest([this.char$, interval(2000)]).pipe(
     map(([char]) =>
       Array.from({ length: 10 }, () =>
@@ -38,7 +58,8 @@ export class CodeGeneratorService {
         this.getLowerInteger(step3[1]),
       ];
       return +step4.join('');
-    })
+    }),
+    shareReplay(),
   );
 
   getClock(): Observable<Date> {
