@@ -1,13 +1,21 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-const routes: Routes = [{
-  path: 'generator',
-  loadChildren: () => import('./modules/generator/generator.module').then(m => m.GeneratorModule)
-}];
+const routes: Routes = [
+  {
+    path: 'generator',
+    loadChildren: async () =>
+      (await import('./modules/generator/generator.module')).GeneratorModule,
+  },
+  {
+    path: 'payments',
+    loadChildren: async () =>
+      (await import('./modules/payments/payments.module')).PaymentsModule,
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
