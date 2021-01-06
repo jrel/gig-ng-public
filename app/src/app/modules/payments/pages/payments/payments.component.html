@@ -1,0 +1,36 @@
+<div>
+  Your code now: <b>{{code$|async}}</b>
+</div>
+
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <label>
+    Payment
+    <input type="text" formControlName="name">
+  </label>
+  <label>
+    Ammount
+    <input type="number" formControlName="ammount">
+  </label>
+  <button type="submit">+ Add</button>
+</form>
+
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Ammount</th>
+      <th>Code</th>
+      <th>Grid</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of payments$|async">
+      <td>{{row.name}}</td>
+      <td>{{row.ammount}}</td>
+      <td>{{row.code}}</td>
+      <td>{{row.grid.length}}</td>
+    </tr>
+  </tbody>
+</table>
