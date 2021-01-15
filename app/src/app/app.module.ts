@@ -7,6 +7,8 @@ import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing.module';
 import { InMemoryDbService } from './db.service';
+import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -19,6 +21,7 @@ import { InMemoryDbService } from './db.service';
     HttpClientInMemoryWebApiModule.forRoot(InMemoryDbService, {
       dataEncapsulation: true,
     }),
+    environment.production ? [] : AkitaNgDevtools.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]
