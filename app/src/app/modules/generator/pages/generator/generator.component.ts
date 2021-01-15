@@ -1,18 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { linear, special } from 'src/app/utils/random';
-import {
-  delay,
-  map,
-  mapTo,
-  startWith,
-  switchMap,
-  tap,
-  timeout,
-  timeoutWith,
-} from 'rxjs/operators';
-import { interval, Observable, of } from 'rxjs';
-import { CodeGeneratorService } from '../../../../services/code-generator.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { interval } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CodeQuery } from 'src/app/state/code.query';
+import { CodeService } from 'src/app/state/code.service';
 
 @Component({
   selector: 'app-module-generator-page-generator',
@@ -23,13 +13,13 @@ import { CodeGeneratorService } from '../../../../services/code-generator.servic
 export class GeneratorPageComponent {
   char = '';
 
-  clock$ = this.service.getClock();
-  data$ = this.service.getData();
+  clock$ = interval(1000).pipe(map(() => new Date()));
+  grid$ = this.query.selectGrid$;
+  code$ = this.query.selectCode$;
 
-
-  constructor(private service: CodeGeneratorService) { }
+  constructor(private service: CodeService, private query: CodeQuery) {}
 
   onGenerateGridButtonClick(): void {
-    this.service.generateNewGrid(this.char);
+    this.service.startGenerating(this.char);
   }
 }
